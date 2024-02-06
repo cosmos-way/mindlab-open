@@ -1,5 +1,5 @@
 import re
-import pdf_reader
+from . import pdf_reader
 
 response_time_rect = (46.17, 314.15, 91.16, 331.59)  # Прямоугольник для "335ms"
 accuracy_rect = (353.19, 314.15, 381.94, 331.59)  # Прямоугольник для "87%"

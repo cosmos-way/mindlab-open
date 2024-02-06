@@ -1,6 +1,6 @@
 import os
 import re
-import gonogo
+from . import gonogo
 
 # Компилируем регулярные выражения для черного и белого списков
 blacklist_regex = re.compile(r"pattern_to_exclude")
@@ -11,9 +11,9 @@ def handle_eeg(file_path):
     print(f"Обработка EEG файла: {file_path}")
 
 def handle_gonogo(file_path):
-  extracted_info = gonogo.extract_info_from_gonogo_filename(os.path.basename(file_path))
-  file_info = gonogo.extract_info_from_gonogo_file(file_path)
-  gonogo_result = gonogo.extract_and_validate_numbers(file_info)
+  extracted_info = gonogo.processing.extract_info_from_gonogo_filename(os.path.basename(file_path))
+  file_info = gonogo.processing.extract_info_from_gonogo_file(file_path)
+  gonogo_result = gonogo.processing.extract_and_validate_numbers(file_info)
   combined_dict = {**extracted_info, **gonogo_result}
   print(combined_dict)
   return combined_dict

@@ -7,6 +7,36 @@ overall_score_rect = (268.75, 70.44, 277.29, 78.19)  # Прямоугольни�
 attempt_num_rect = (37.54, 74.79, 77.0, 82.24)  # Прямоугольник для "Attempt #84"
 score_rect = (46.17, 167.96, 131.46, 191.95)
 
+def extract_and_validate_numbers(obj):
+    """
+    Извлекает и валидирует числа из значений заданного словаря.
+
+    :param obj: Словарь с текстовыми данными.
+    :return: Словарь с извлеченными и валидированными числовыми значениями.
+    """
+    extracted_numbers = {}
+
+    # Правила валидации для разных ключей
+    validation_rules = {
+        'response_time': r'(\d+)ms',  # целое число + ms
+        'accuracy': r'(\d+)%',  # целое число + %
+        'overall_score': r'(\d+(?:\.\d+)?)',  # целое или дробное число
+        'attempt_num': r'Attempt #(\d+)',  # целое число после '#'
+        'score': r'(\d+) points'  # целое число + points
+    }
+
+    for key, pattern in validation_rules.items():
+        value = obj.get(key, '')
+        match = re.search(pattern, value)
+        if match:
+            # Преобразование извлеченного значения в float, если это дробное число, иначе в int
+            num_value = match.group(1)
+            extracted_numbers[key] = float(num_value) if '.' in num_value else int(num_value)
+        else:
+            extracted_numbers[key] = None  # или другое значение по умолчанию для невалидных данных
+
+    return extracted_numbers
+
 def extract_info_from_gonogo_file(file_path):
   response_time_text = pdf_reader.extract_text_by_coordinates(file_path, response_time_rect)
   accuracy_text = pdf_reader.extract_text_by_coordinates(file_path, accuracy_rect)

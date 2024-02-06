@@ -18,5 +18,3 @@ def extract_text_by_coordinates(pdf_path, rect):
 
     doc.close()  # Закрытие документа
     return text.strip()  # Удаление лишних пробелов и переносов строк
-
-# Пример использования функции

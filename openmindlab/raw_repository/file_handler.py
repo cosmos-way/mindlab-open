@@ -1,23 +1,8 @@
 import csv, os 
 from . import gonogo
+from openmindlab.base.csv.base_writer import BaseWriter as CsvBaseWriter
 
-class BaseHandler:
-    def __init__(self, output_file):
-        self.output_file = output_file
-        self.file = open(output_file, 'w', newline='', encoding='utf-8')
-        # self.writer = csv.writer(self.file)
-    
-    def handle(self, data):
-        if isinstance(data, dict):
-            self.writer.writerow(data)
-            
-    def process(self, file_path):
-        pass
-    
-    def close(self):
-        self.file.close()
-
-class GoNoGoReportHandler(BaseHandler):
+class GoNoGoReportHandler(CsvBaseWriter):
     def __init__(self, output_file):
         super().__init__(output_file)
         self.writer = csv.DictWriter(self.file, fieldnames=['respondentID', 'day', 'times', 'response_time', 'accuracy', 'overall_score', 'attempt_num', 'score'])

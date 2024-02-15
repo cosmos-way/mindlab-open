@@ -3,11 +3,9 @@ import re
 import csv
 from .file_handler import GoNoGoReportHandler
 
-# Компилируем регулярные выражения для черного и белого списков
 blacklist_regex = re.compile(r"pattern_to_exclude")
 whitelist_regex = re.compile(r'^[^\\/:*?"<>|\r\n]+\.pdf$')
 
-# Словарь сопоставления типов контента и хэндлеров
 content_handlers = {
     'gonogo': None
 }
@@ -25,15 +23,14 @@ def process_directory(root_directory, output_csv_path):
         for respondent_id in os.listdir(root_directory):
             respondent_path = os.path.join(root_directory, respondent_id)
             if not os.path.isdir(respondent_path):
-                continue  # Пропускаем файлы на уровне root_directory
-            for day in ['1day', '2day', 'day1', 'day2']:
+                continue  
+            for day in ['1day', '2day']:
                 day_path = os.path.join(respondent_path, day)
                 if not os.path.isdir(day_path):
-                    continue  # Пропускаем, если директория дня отсутствует
+                    continue  
                 for content_type in content_handlers.keys():
                     content_path = os.path.join(day_path, content_type)
                     if os.path.isdir(content_path):
-                        # Здесь можно добавить многопоточность или асинхронную обработку
                         process_files_in_directory(content_path, content_handlers[content_type])
     finally:
         content_handlers['gonogo'].close()

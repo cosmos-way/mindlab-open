@@ -10,7 +10,6 @@ import json
 
 headers = ['respondent_id', 'day_1', 'day_2', 'day_1/eeg', 'day_1/gonogo', 'day_1/video', 'day_2/eeg', 'day_2/gonogo', 'day_2/video']
 
-
 def read_csv_data(csv_file_path):
     data = {}
     if os.path.isfile(csv_file_path):
@@ -29,9 +28,9 @@ def write_to_csv(csv_file_path, all_data):
 
 def update_data(respondent_id, category, value, existing_data):
     if respondent_id in existing_data:
-        if existing_data[respondent_id][category] == '0':  # Если файл не был найден, можно перезаписать
+        if existing_data[respondent_id][category] == '0':  
             existing_data[respondent_id][category] = value
-        elif existing_data[respondent_id][category] != value:  # Если информация отличается, вывести ошибку
+        elif existing_data[respondent_id][category] != value:  
             raise ValueError(f"Ошибка: Данные для respondent_id {respondent_id} в категории {category} уже существуют и отличаются.")
     else:
         existing_data[respondent_id] = {category: value}
@@ -90,9 +89,7 @@ def get_eeg_files(day_path, root_path):
             else:
                 raise ValueError("Полный путь не находится внутри корневого пути")
             
-    if len(eeg_files) == 1:
-        return eeg_files[0]  
-    elif len(eeg_files) > 1:
+    if len(eeg_files):
         return json.dumps(eeg_files)  
     else:
         return 0  
@@ -114,9 +111,7 @@ def get_gonogo_files(day_path, root_path):
             else:
                 raise ValueError("Полный путь не находится внутри корневого пути")
             
-    if len(gonogo_files) == 1:
-        return gonogo_files[0]  
-    elif len(gonogo_files) > 1:
+    if len(gonogo_files):
         return json.dumps(gonogo_files)  
     else:
         return 0  
@@ -138,9 +133,7 @@ def get_video_files(day_path, root_path):
             else:
                 raise ValueError("Полный путь не находится внутри корневого пути")
             
-    if len(video_files) == 1:
-        return video_files[0]  
-    elif len(video_files) > 1:
+    if len(video_files):
         return json.dumps(video_files)  
     else:
         return 0  

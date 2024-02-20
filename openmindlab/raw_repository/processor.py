@@ -1,6 +1,7 @@
 import os
 import re
 import csv
+import json
 from .file_handler import GoNoGoReportHandler
 
 blacklist_regex = re.compile(r"pattern_to_exclude")
@@ -34,3 +35,28 @@ def process_directory(root_directory, output_csv_path):
                         process_files_in_directory(content_path, content_handlers[content_type])
     finally:
         content_handlers['gonogo'].close()
+
+def process_with_all_files_report(root_directory, all_files_report, output_csv_path):
+    content_handlers['gonogo'] = GoNoGoReportHandler(output_csv_path)
+    data = {}
+    try:
+        if os.path.isfile(all_files_report):
+            with open(all_files_report, mode='r', newline='', encoding='utf-8') as csv_file:
+                reader = csv.DictReader(csv_file)
+                for row in reader:
+                    data[row['respondent_id']] = row
+                    try:
+                        day1_eeg = json.loads(row['day_1/gonogo']);
+                        day2_eeg = json.loads(row['day_2/gonogo']);
+                        if not day1_eeg:
+                            day1_eeg = []
+                        if not day2_eeg:
+                            day2_eeg = []
+                        for item in day1_eeg:
+                            content_handlers['gonogo'].process(os.path.join(root_directory, item), 1, row['respondent_id'])
+                        for item in day2_eeg:
+                            content_handlers['gonogo'].process(os.path.join(root_directory, item), 2, row['respondent_id'])
+                    except json.JSONDecodeError:
+                        print("Ошибка при разборе JSON")    
+    finally:
+        content_handlers['gonogo'].close()            

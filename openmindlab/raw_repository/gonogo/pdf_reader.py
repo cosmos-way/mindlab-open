@@ -18,3 +18,30 @@ def extract_text_by_coordinates(pdf_path, rect):
 
     doc.close()  # Закрытие документа
     return text.strip()  # Удаление лишних пробелов и переносов строк
+
+
+def find_text_in_pdf(file_path, search_text):
+    doc = fitz.open(file_path)
+    found_instances = []
+
+    # Перебор страниц и поиск текста
+    for page_num in range(len(doc)):
+        page = doc.load_page(page_num)
+        text_instances = page.search_for(search_text)
+        
+        # Добавление информации о найденных инстанциях
+        for inst in text_instances:
+            found_instances.append({
+                "page": page_num + 1,  # Нумерация страниц для пользователя начинается с 1
+                "coords": inst
+            })
+
+    doc.close()
+
+    # Проверка, найден ли текст ровно один раз
+    if len(found_instances) == 1:
+        return found_instances[0]['coords']
+    elif len(found_instances) == 0:
+        return 0
+    else:
+        return 0
